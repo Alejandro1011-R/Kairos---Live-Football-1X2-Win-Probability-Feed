@@ -1,0 +1,114 @@
+{
+  "dataset": {
+    "competitions": [
+      "Premier League 2015/16",
+      "La Liga 2015/16"
+    ],
+    "matches": 760,
+    "snapshots": 69160,
+    "train_matches": 608,
+    "test_matches": 152,
+    "kickoff_base_rates": {
+      "H": 0.4474,
+      "A": 0.2908,
+      "D": 0.2618
+    }
+  },
+  "features_liveedge": [
+    "minute",
+    "time_remaining",
+    "goal_diff",
+    "mxgd",
+    "tr_gd",
+    "xg_diff",
+    "red_diff",
+    "shots_home",
+    "shots_away"
+  ],
+  "features_gbm": [
+    "minute",
+    "time_remaining",
+    "goal_diff",
+    "home_goals",
+    "away_goals",
+    "red_home",
+    "red_away",
+    "shots_home",
+    "shots_away",
+    "xg_home",
+    "xg_away",
+    "xg_diff"
+  ],
+  "features_baseline": [
+    "minute",
+    "goal_diff"
+  ],
+  "metrics": [
+    {
+      "model": "M1 Scoreboard baseline",
+      "log_loss": 0.8122016787008689,
+      "brier": 0.47812709905625633,
+      "accuracy": 0.6325187969924813,
+      "ece_homewin": 0.045334510835193784
+    },
+    {
+      "model": "M2 Gradient boosting (uncalib.)",
+      "log_loss": 1.929751345642518,
+      "brier": 0.6981291924428057,
+      "accuracy": 0.5657894736842105,
+      "ece_homewin": 0.17388824616520931
+    },
+    {
+      "model": "M3 Kairos (calibrated)",
+      "log_loss": 0.7928895373348026,
+      "brier": 0.469095385478382,
+      "accuracy": 0.6330248698669751,
+      "ece_homewin": 0.045099539750734094
+    }
+  ],
+  "logloss_reduction_pct_vs_baseline": 2.38,
+  "by_game_state": [
+    {
+      "state": "All snapshots",
+      "n": 13832,
+      "baseline": 0.8122,
+      "liveedge": 0.7929,
+      "uplift_pct": 2.38
+    },
+    {
+      "state": "Level score (goal_diff=0)",
+      "n": 6268,
+      "baseline": 1.0759,
+      "liveedge": 1.0595,
+      "uplift_pct": 1.52
+    },
+    {
+      "state": "Level & 0-0",
+      "n": 4744,
+      "baseline": 1.0822,
+      "liveedge": 1.0661,
+      "uplift_pct": 1.49
+    },
+    {
+      "state": "1-goal margin",
+      "n": 5105,
+      "baseline": 0.7994,
+      "liveedge": 0.7787,
+      "uplift_pct": 2.58
+    },
+    {
+      "state": "Has a red card",
+      "n": 918,
+      "baseline": 0.6585,
+      "liveedge": 0.4761,
+      "uplift_pct": 27.69
+    },
+    {
+      "state": "Last 30 min, level",
+      "n": 1367,
+      "baseline": 1.0102,
+      "liveedge": 0.973,
+      "uplift_pct": 3.68
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "dataset": {
+    "source": "KickoffAPI events + StatsBomb open-data event streams (exact goal/red-card timestamps everywhere; real per-minute shots/xG on the StatsBomb matches; no proxies) + eloratings.net pre-match Elo (build_elo.py) + football-data.co.uk closing odds for WC2018/WC2022 (build_odds_intl.py \u2014 market prior in training where it exists)",
+    "competitions": [
+      "AFC Asian Cup 2023",
+      "Africa Cup of Nations 2025",
+      "African Cup of Nations 2023",
+      "CONCACAF Gold Cup 2025",
+      "Copa America 2024",
+      "FIFA World Cup 2018",
+      "FIFA World Cup 2022",
+      "UEFA Euro 2020",
+      "UEFA Euro 2024",
+      "UEFA Nations League 2024"
+    ],
+    "matches": 636,
+    "snapshots": 57876,
+    "matches_with_xg": 314,
+    "matches_with_market_prior": 128,
+    "train_matches": 509,
+    "test_matches": 127,
+    "kickoff_base_rates": {
+      "H": 0.3726,
+      "D": 0.3381,
+      "A": 0.2893
+    }
+  },
+  "method": "M3 = Poisson goal-arrival process (Skellam-distributed remaining goal difference) with a swap-ready strength prior (de-vigged market odds when a market exists, Elo otherwise), real rolling-xG attacking intensity where the event stream carries it, plus a multinomial recalibration layer fit on out-of-fold (by-match) predictions, correcting the Skellam independence assumption's draw under-pricing (Dixon-Coles effect). Following Robberechts et al. KDD'21 and Clegg et al. 2026 \u2014 not a snapshot classifier.",
+  "metrics": [
+    {
+      "model": "M1 Scoreboard baseline",
+      "log_loss": 0.8578360185026056,
+      "brier": 0.5106098074460708,
+      "accuracy": 0.600155749762049,
+      "ece_homewin": 0.03943826681123126
+    },
+    {
+      "model": "M2 Gradient boosting (uncalib., +Elo)",
+      "log_loss": 2.369098692022488,
+      "brier": 0.8205728375987044,
+      "accuracy": 0.5162239335467682,
+      "ece_homewin": 0.2763508376528462
+    },
+    {
+      "model": "M3a Goal-process, raw Skellam (ablation)",
+      "log_loss": 0.7670949420525698,
+      "brier": 0.4423793476501608,
+      "accuracy": 0.6621095439993078,
+      "ece_homewin": 0.051484112921085755
+    },
+    {
+      "model": "M3 Kairos (goal-process + recalibration)",
+      "log_loss": 0.7604633189501363,
+      "brier": 0.4414363880507537,
+      "accuracy": 0.6673012027342736,
+      "ece_homewin": 0.054973729377463844
+    }
+  ],
+  "logloss_reduction_pct_vs_baseline": 11.35,
+  "by_game_state": [
+    {
+      "state": "All snapshots",
+      "n": 11557,
+      "baseline": 0.8578,
+      "kairos": 0.7605,
+      "uplift_pct": 11.35
+    },
+    {
+      "state": "Level score (goal_diff=0)",
+      "n": 6668,
+      "baseline": 1.0263,
+      "kairos": 0.9168,
+      "uplift_pct": 10.66
+    },
+    {
+      "state": "1-goal margin",
+      "n": 3531,
+      "baseline": 0.7635,
+      "kairos": 0.6627,
+      "uplift_pct": 13.19
+    },
+    {
+      "state": "Has a red card",
+      "n": 416,
+      "baseline": 0.7501,
+      "kairos": 0.6052,
+      "uplift_pct": 19.32
+    },
+    {
+      "state": "Last 30 min, level",
+      "n": 1574,
+      "baseline": 0.8604,
+      "kairos": 0.7928,
+      "uplift_pct": 7.86
+    }
+  ]
+}
