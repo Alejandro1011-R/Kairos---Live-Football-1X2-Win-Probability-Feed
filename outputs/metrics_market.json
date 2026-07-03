@@ -8,71 +8,71 @@
   "metrics": [
     {
       "model": "M1 Scoreboard baseline",
-      "log_loss": 0.8122016787008689,
-      "brier": 0.47812709905625633,
-      "accuracy": 0.6325187969924813,
-      "ece_homewin": 0.045334510835193784
+      "log_loss": 0.8211525367898289,
+      "brier": 0.48093339468986246,
+      "accuracy": 0.6549305957200694,
+      "ece_homewin": 0.05117797055718315
     },
     {
       "model": "M4a Goal-process, no prior",
-      "log_loss": 0.7957466291834235,
-      "brier": 0.46271752933048355,
-      "accuracy": 0.635989010989011,
-      "ece_homewin": 0.027486629808829068
+      "log_loss": 0.7868266347979027,
+      "brier": 0.4549835457900989,
+      "accuracy": 0.6573163678426837,
+      "ece_homewin": 0.0359862502381884
     },
     {
       "model": "M4b Goal-process + xG intensity",
-      "log_loss": 0.7957364495142437,
-      "brier": 0.46258835741258847,
-      "accuracy": 0.6348322729901678,
-      "ece_homewin": 0.028374404207961976
+      "log_loss": 0.7862021067848758,
+      "brier": 0.4546339618362006,
+      "accuracy": 0.6556535569693465,
+      "ece_homewin": 0.03327661733993301
     },
     {
       "model": "M4 Kairos-M (+ market prior)",
-      "log_loss": 0.7547633486092395,
-      "brier": 0.43806879981663666,
-      "accuracy": 0.6659919028340081,
-      "ece_homewin": 0.05507044139325276
+      "log_loss": 0.7544612919842174,
+      "brier": 0.4347452525139483,
+      "accuracy": 0.6744505494505495,
+      "ece_homewin": 0.032136716279103784
     }
   ],
-  "kairos_m_vs_baseline_pct": 7.07,
-  "market_prior_worth_pct": 5.15,
-  "xg_intensity_worth_pct": 0.0,
+  "kairos_m_vs_baseline_pct": 8.12,
+  "market_prior_worth_pct": 4.11,
+  "xg_intensity_worth_pct": 0.08,
   "by_game_state": [
     {
       "state": "All snapshots",
       "n": 13832,
-      "baseline": 0.8122,
-      "kairos_m": 0.7548,
-      "uplift_pct": 7.07
+      "baseline": 0.8212,
+      "kairos_m": 0.7545,
+      "uplift_pct": 8.12
     },
     {
       "state": "Level score (goal_diff=0)",
-      "n": 6268,
-      "baseline": 1.0759,
-      "kairos_m": 1.0068,
-      "uplift_pct": 6.42
+      "n": 6659,
+      "baseline": 1.0421,
+      "kairos_m": 0.979,
+      "uplift_pct": 6.06
     },
     {
       "state": "1-goal margin",
-      "n": 5105,
-      "baseline": 0.7994,
-      "kairos_m": 0.7451,
-      "uplift_pct": 6.79
+      "n": 4951,
+      "baseline": 0.7461,
+      "kairos_m": 0.661,
+      "uplift_pct": 11.41
     },
     {
       "state": "Has a red card",
-      "n": 918,
-      "baseline": 0.6585,
-      "kairos_m": 0.5826,
-      "uplift_pct": 11.52
+      "n": 839,
+      "baseline": 0.5746,
+      "kairos_m": 0.4761,
+      "uplift_pct": 17.14
     },
     {
       "state": "Last 30 min, level",
-      "n": 1367,
-      "baseline": 1.0102,
-      "kairos_m": 0.9911,
-      "uplift_pct": 1.9
+      "n": 1556,
+      "baseline": 0.9481,
+      "kairos_m": 0.8497,
+      "uplift_pct": 10.38
     }
   ]
 }

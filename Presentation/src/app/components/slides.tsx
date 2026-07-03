@@ -225,7 +225,7 @@ function S1Title() {
         {[
           ["Coverage", "636 intl matches"],
           ["Resolution", "Per-minute, live"],
-          ["Edge vs baseline", "+11.4% log-loss"],
+          ["Edge vs baseline", "+8.4% log-loss"],
           ["Year-1 effect", "≈ $2.7M"],
         ].map(([k, v]) => (
           <div key={k}>
@@ -334,15 +334,15 @@ function S2GoalMarket() {
 // ---------- Slide 3 — Math problem statement + Dualism (merged) ----------
 function S3MathDualism() {
   const rows = [
-    { name: "M1 · Scoreboard baseline", sub: "logistic on minute + goal_diff", ll: "0.812", ac: "0.6325", ece: "0.045", tone: "neutral" },
-    { name: "M2 · Gradient boosting", sub: "uncalibrated — the trap", ll: "1.930", ac: "0.5658", ece: "0.174", tone: "bad" },
-    { name: "M3 · Kairos", sub: "calibrated logistic + interactions", ll: "0.793", ac: "0.6330", ece: "0.045", tone: "good" },
+    { name: "M1 · Scoreboard baseline", sub: "logistic on minute + goal_diff", ll: "0.821", ac: "0.655", ece: "0.051", tone: "neutral" },
+    { name: "M2 · Gradient boosting", sub: "uncalibrated — the trap", ll: "1.927", ac: "0.559", ece: "0.211", tone: "bad" },
+    { name: "M3 · Kairos", sub: "calibrated logistic + interactions", ll: "0.804", ac: "0.639", ece: "0.023", tone: "good" },
   ];
   return (
     <div className="flex flex-col h-full gap-5">
       <Eyebrow>Math problem statement · Validation</Eyebrow>
       <H1>
-        Same accuracy. <span style={{ color: ACCENT }}>Wildly different</span> money.
+        Worse accuracy. <span style={{ color: ACCENT }}>Better</span> money.
       </H1>
       <div className="grid grid-cols-5 gap-8">
         <div
@@ -413,12 +413,15 @@ function S3MathDualism() {
         style={{ borderLeft: `3px solid ${ACCENT}`, background: "#0F141B" }}
       >
         <div style={{ fontSize: 14.5, color: "#E6E9EE", lineHeight: 1.5 }}>
-          M1 and M3 are <strong>identical on accuracy</strong> (0.6325 vs 0.6330) — yet
-          M3 is meaningfully better priced (<strong>−2.4% log-loss</strong>). M2 looks
-          "only a bit worse" on accuracy but its probabilities are{" "}
-          <strong>2.4× worse log-loss</strong> and 4× worse calibrated — it would{" "}
-          <strong>bleed money in a market</strong>. Accuracy alone can't see the difference;
-          this same dualism re-appears sharper on the real World Cup 2026 track (Results, next).
+          M3 actually has <strong>worse accuracy</strong> than M1 (0.639 vs 0.655 —
+          optimizing for accuracy picks the wrong model) — yet M3 is meaningfully
+          better priced (<strong>−2.1% log-loss</strong>, less than half M1's
+          calibration error). M2 looks "only a bit worse" on accuracy but its
+          probabilities are{" "}
+          <strong>2.4× worse log-loss</strong> and 9× worse calibrated — it would{" "}
+          <strong>bleed money in a market</strong>. Accuracy doesn't just miss the
+          difference here — it points the wrong way; this same dualism re-appears
+          on the real World Cup 2026 track (Results, next).
         </div>
       </div>
     </div>
@@ -451,7 +454,7 @@ function S4ResearchModel() {
           <div style={{ fontSize: 13.5, color: "#E6E9EE", lineHeight: 1.5 }}>
             We reproduced that finding independently: on 760 club matches with
             real Pinnacle closing odds, the <strong style={{ color: ACCENT }}>
-            market prior alone is worth +5.2% log-loss</strong> — more than every
+            market prior alone is worth +4.1% log-loss</strong> — more than every
             in-play covariate combined; real per-minute xG adds ~0% once it's in.
           </div>
         </div>
@@ -479,7 +482,7 @@ function S4ResearchModel() {
         </div>
         <div className="flex flex-col gap-2.5">
           {[
-            ["01", "Market-anchored prior", "de-vigged odds in training & serving, Elo fallback — worth +5.2% log-loss, measured not assumed"],
+            ["01", "Market-anchored prior", "de-vigged odds in training & serving, Elo fallback — worth +4.1% log-loss, measured not assumed"],
             ["02", "Poisson goal-arrival rate", "goal_diff, red_diff, rolling real-xG (has_xg flag, never a proxy) modulate live scoring rate"],
             ["03", "Skellam, closed form", "exact distribution of the goal-count difference — no Monte-Carlo simulation"],
             ["04", "Out-of-fold calibration", "corrects the Skellam independence bias that under-prices the draw (Dixon-Coles) — the largest single gain"],
@@ -519,10 +522,10 @@ function S5Dataset() {
     },
     {
       tag: "The real product",
-      source: "KickoffAPI + StatsBomb events + eloratings.net",
+      source: "KickoffAPI + StatsBomb events + eloratings.net + betexplorer.com",
       matches: "636",
       snaps: "57,876",
-      detail: "10 major tournaments incl. WC2018/22, Euros, Copa América, AFCON — deduplicated, regulation-time labels, Elo 135/135 teams matched",
+      detail: "10 major tournaments incl. WC2018/22, Euros, Copa América, AFCON — deduplicated, regulation-time labels, market prior on 616/636 matches (97%), Elo fallback for the rest",
     },
   ];
   return (
@@ -563,21 +566,27 @@ function S5Dataset() {
         className="mt-auto p-5"
         style={{ borderLeft: `3px solid ${ACCENT}`, background: "#0F141B" }}
       >
-        <div style={{ fontSize: 14, color: "#E6E9EE", lineHeight: 1.55 }}>
-          Data honesty, enforced twice. A labelled proxy is still a fabricated data
-          point — when a feed only exposed match-final shot/xG totals, we didn't
-          ramp them into fake per-minute values; real per-minute xG comes only from
-          real event streams. And official scores include extra time, which
-          silently flips the regulation-time 1X2 label of 9 ET-decided knockouts
-          (incl. the Copa América final) — every label is recomputed from{" "}
-          <strong style={{ color: ACCENT }}>period-1/2 events</strong> instead.
+        <div style={{ fontSize: 13, color: "#E6E9EE", lineHeight: 1.5 }}>
+          Data honesty, enforced three times. A labelled proxy is still fabricated
+          data — no ramped per-minute values, ever, only real event streams.
+          Official scores include extra time, which silently flips 9 knockouts'
+          regulation-time label (incl. the Copa América final) — every label
+          recomputed from <strong style={{ color: ACCENT }}>period-1/2 events</strong>.
+          And the market prior: <strong style={{ color: ACCENT }}>616/636 matches
+          (97%)</strong> now carry a real closing-odds price — 128 via
+          football-data.co.uk, 488 scraped from betexplorer.com's public results
+          pages against that site's stated terms of service — disclosed here on
+          purpose, not the default recommendation for anyone reusing this pipeline
+          (the ToS-compliant path is a paid The Odds API plan, already wired via
+          market_live.py).
         </div>
       </div>
       <div
         className="uppercase tracking-[0.15em]"
         style={{ fontSize: 10, color: "#4C5867", fontFamily: FONT_MONO }}
       >
-        Sources — StatsBomb Open Data · football-data.co.uk · KickoffAPI · eloratings.net · The Odds API (live)
+        Sources — StatsBomb Open Data · football-data.co.uk · KickoffAPI ·
+        eloratings.net · betexplorer.com (scraped) · The Odds API (live)
       </div>
     </div>
   );
@@ -705,16 +714,16 @@ function S6Results() {
   const kickoff = match.traj[0];
 
   const models = [
-    { name: "M1 Scoreboard baseline", ll: "0.858", ac: "0.600", ece: "0.039", tone: "neutral" },
-    { name: "M2 Gradient boosting (+Elo, uncalib.)", ll: "2.369", ac: "0.516", ece: "0.276", tone: "bad" },
-    { name: "M3 Kairos (goal-process + market/Elo prior)", ll: "0.761", ac: "0.667", ece: "0.055", tone: "good" },
+    { name: "M1 Scoreboard baseline", ll: "0.861", ac: "0.621", ece: "0.068", tone: "neutral" },
+    { name: "M2 Gradient boosting (+Elo, uncalib.)", ll: "2.544", ac: "0.478", ece: "0.286", tone: "bad" },
+    { name: "M3 Kairos (goal-process + market/Elo prior)", ll: "0.789", ac: "0.662", ece: "0.035", tone: "good" },
   ];
 
   const states = [
-    { s: "All snapshots", n: "11,557", b: "0.858", k: "0.760", u: "+11.4%" },
-    { s: "1-goal margin", n: "3,531", b: "0.764", k: "0.663", u: "+13.2%" },
-    { s: "Has a red card", n: "416", b: "0.750", k: "0.605", u: "+19.3%" },
-    { s: "Last 30 min · level", n: "1,574", b: "0.860", k: "0.793", u: "+7.9%" },
+    { s: "All snapshots", n: "11,557", b: "0.861", k: "0.789", u: "+8.4%" },
+    { s: "1-goal margin", n: "3,779", b: "0.856", k: "0.741", u: "+13.5%" },
+    { s: "Has a red card", n: "806", b: "0.782", k: "0.795", u: "−1.7%" },
+    { s: "Last 30 min · level", n: "1,458", b: "0.867", k: "0.846", u: "+2.4%" },
   ];
 
   return (
@@ -843,7 +852,7 @@ function S6Results() {
             className="p-2 text-center"
             style={{ background: "rgba(229,9,63,0.12)", border: `1px solid ${ACCENT}`, fontSize: 11, color: "#E6E9EE" }}
           >
-            M2 memorised matches via a match-constant Elo feature — train acc 90.5% vs test 51.6%.
+            M2 memorised matches via a match-constant Elo feature — train acc 90.1% vs test 47.8%.
           </div>
           <div
             className="grid items-center px-3 py-2 uppercase tracking-[0.2em]"
@@ -869,12 +878,23 @@ function S6Results() {
               <div className="text-right" style={{ fontFamily: FONT_MONO, color: SUB }}>{s.b}</div>
               <div
                 className="text-right"
-                style={{ fontFamily: FONT_MONO, color: ACCENT, fontWeight: 800, fontSize: 14 }}
+                style={{
+                  fontFamily: FONT_MONO,
+                  color: s.u.startsWith("−") ? SUB : ACCENT,
+                  fontWeight: 800,
+                  fontSize: 14,
+                }}
               >
                 {s.u}
               </div>
             </div>
           ))}
+        </div>
+        <div
+          className="uppercase tracking-[0.15em]"
+          style={{ fontSize: 8.5, color: "#4C5867", fontFamily: FONT_MONO, marginTop: 2 }}
+        >
+          Red-card row is n=806 (~7% of test) — flipped sign for the third time across methodology fixes, not a stable read
         </div>
       </div>
     </div>
@@ -896,9 +916,9 @@ function S7Economics() {
       </H1>
       <div style={{ fontSize: 16, lineHeight: 1.45, color: "#C9D1DA", maxWidth: 900 }}>
         Break-even needs only 0.06pp of hold uplift. Our WC2026-track evidence an edge
-        exists: <strong style={{ color: ACCENT }}>+11.4% log-loss</strong> vs baseline
-        overall, up to <strong style={{ color: ACCENT }}>+19.3%</strong> in the
-        highest-volume live-betting states — significant at p&lt;10⁻⁸ with the
+        exists: <strong style={{ color: ACCENT }}>+8.4% log-loss</strong> vs baseline
+        overall, up to <strong style={{ color: ACCENT }}>+13.5%</strong> in
+        one-goal-margin states — significant at p≈1.2×10⁻⁵ with the
         bootstrap CI excluding zero — turning that into a hold-uplift number
         is the job of the CLV backtest (see roadmap).
       </div>
@@ -1008,14 +1028,14 @@ function Sub({ label, v }: { label: string; v: string }) {
 // ---------- Slide 8 — Proven today + Roadmap (merged close) ----------
 function S8Close() {
   const proven = [
-    "Beats the scoreboard baseline on log-loss on every track tested — +7.1% club football with the market prior, +11.4% World Cup 2026 (p<10⁻⁸, CI excludes zero, better in 105/127 held-out matches).",
-    "Calibrated, not just ranked — ECE(home) 0.055 international, 0.028 club goal process, vs 0.276 for the uncalibrated trap.",
-    "Zero fabricated or proxied data, and the architecture matches the 2021-2026 literature and Opta's own described design.",
+    "Beats the scoreboard baseline on log-loss on every track tested — +8.1% club football with the market prior, +8.4% World Cup 2026 (p≈1.2×10⁻⁵, CI excludes zero, better in 91/127 held-out matches).",
+    "Calibrated, not just ranked — ECE(home) 0.035 international, 0.036 club goal-process, vs 0.286 for the uncalibrated trap.",
+    "Zero fabricated data, every source disclosed — including where a market prior was scraped, not licensed (Slide 5) — and the architecture matches the 2021-2026 literature and Opta's own described design.",
   ];
   const wk = [
     { w: "01", t: "CLV backtest", d: "Match live vs. closing odds — turns the log-loss edge into a € hold number; the serving path already ingests the comparison prices" },
     { w: "02", t: "Live service", d: "Wrap the model as a latency-budgeted API with health monitoring" },
-    { w: "03", t: "Odds backfill", d: "World Cups already backfilled (0.765→0.761 log-loss); extend to Euro/Copa/AFCON" },
+    { w: "03", t: "Legalize the odds source", d: "616/636 matched (97%, incl. a betexplorer.com scrape against its ToS); move that path to the paid, ToS-compliant Odds API before any commercial use" },
     { w: "04", t: "Pilot kit", d: "Monitoring + A/B harness, then an operator-ready feed for a live client pilot" },
   ];
   return (

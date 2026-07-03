@@ -144,6 +144,11 @@ def main():
                 print(f"  {i}/{len(matches)} (ok={ok}, bad={bad})", flush=True)
 
     df = pd.DataFrame(all_rows)
+    # see build_dataset.py: ThreadPoolExecutor completion order is
+    # non-deterministic, and train_intl.py's match-level split needs a
+    # stable match_id first-occurrence order to reproduce the same split
+    # across regenerations.
+    df = df.sort_values(["match_id", "minute"]).reset_index(drop=True)
     out = os.path.join(DATA, "snapshots_sb_intl.csv")
     df.to_csv(out, index=False)
     print(f"DONE. matches ok={ok} bad={bad} | rows={len(df)} -> {out}")

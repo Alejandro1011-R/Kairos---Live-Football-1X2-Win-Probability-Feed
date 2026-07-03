@@ -108,9 +108,15 @@ def load_intl():
 
     Where free historical closing odds exist (WC2018 + WC2022, football-data
     .co.uk via build_odds_intl.py) each match also carries de-vigged market
-    probabilities (mkt_pH/pD/pA, constant across its 91 rows) — PriorModule
-    then uses the market prior on those matches and Elo on the rest, the same
-    mixed regime the serving path runs."""
+    probabilities (mkt_pH/pD/pA, constant across its 91 rows). A second wave
+    (build_odds_intl_scraped.py — betexplorer.com "best odds" 1X2, personal/
+    academic use, see that module's docstring on its ToS caveat) backfills
+    the remaining tournaments (Euro 2020/24, Copa América 2024, AFCON 23/25,
+    Asian Cup 2023, Gold Cup 2025, Nations League 2024) where WC-workbook
+    odds don't exist; football-data.co.uk odds always take priority when a
+    match happens to have both. PriorModule then uses whichever market prior
+    is present and Elo on the rest, the same mixed regime the serving path
+    runs."""
     a = pd.read_csv(os.path.join(DATA, "snapshots_intl.csv"))
     sb = os.path.join(DATA, "snapshots_sb_intl.csv")
     if os.path.exists(sb):
@@ -127,6 +133,14 @@ def load_intl():
     if os.path.exists(odds):
         o = pd.read_csv(odds)[["match_id", "comp", "mkt_pH", "mkt_pD", "mkt_pA"]]
         df = df.merge(o, on=["match_id", "comp"], how="left")
+    scraped = os.path.join(DATA, "odds_intl_scraped.csv")
+    if os.path.exists(scraped):
+        s = pd.read_csv(scraped)[["match_id", "comp", "mkt_pH", "mkt_pD", "mkt_pA"]]
+        s = s.rename(columns={c: f"{c}_scraped" for c in ("mkt_pH", "mkt_pD", "mkt_pA")})
+        df = df.merge(s, on=["match_id", "comp"], how="left")
+        for c in ("mkt_pH", "mkt_pD", "mkt_pA"):
+            df[c] = df[c].fillna(df[f"{c}_scraped"])
+        df = df.drop(columns=[f"{c}_scraped" for c in ("mkt_pH", "mkt_pD", "mkt_pA")])
     return _add_live_features(df)
 
 

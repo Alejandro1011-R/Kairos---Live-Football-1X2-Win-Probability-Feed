@@ -46,69 +46,69 @@
   "metrics": [
     {
       "model": "M1 Scoreboard baseline",
-      "log_loss": 0.8122016787008689,
-      "brier": 0.47812709905625633,
-      "accuracy": 0.6325187969924813,
-      "ece_homewin": 0.045334510835193784
+      "log_loss": 0.8211525367898289,
+      "brier": 0.48093339468986246,
+      "accuracy": 0.6549305957200694,
+      "ece_homewin": 0.05117797055718315
     },
     {
       "model": "M2 Gradient boosting (uncalib.)",
-      "log_loss": 1.929751345642518,
-      "brier": 0.6981291924428057,
-      "accuracy": 0.5657894736842105,
-      "ece_homewin": 0.17388824616520931
+      "log_loss": 1.9273982141731723,
+      "brier": 0.7109996914594147,
+      "accuracy": 0.5589936379410063,
+      "ece_homewin": 0.21060620598284974
     },
     {
       "model": "M3 Kairos (calibrated)",
-      "log_loss": 0.7928895373348026,
-      "brier": 0.469095385478382,
-      "accuracy": 0.6330248698669751,
-      "ece_homewin": 0.045099539750734094
+      "log_loss": 0.8037237672474599,
+      "brier": 0.4703983924114351,
+      "accuracy": 0.6390254482359745,
+      "ece_homewin": 0.022458706912388382
     }
   ],
-  "logloss_reduction_pct_vs_baseline": 2.38,
+  "logloss_reduction_pct_vs_baseline": 2.12,
   "by_game_state": [
     {
       "state": "All snapshots",
       "n": 13832,
-      "baseline": 0.8122,
-      "liveedge": 0.7929,
-      "uplift_pct": 2.38
+      "baseline": 0.8212,
+      "liveedge": 0.8037,
+      "uplift_pct": 2.12
     },
     {
       "state": "Level score (goal_diff=0)",
-      "n": 6268,
-      "baseline": 1.0759,
-      "liveedge": 1.0595,
-      "uplift_pct": 1.52
+      "n": 6659,
+      "baseline": 1.0421,
+      "liveedge": 1.0255,
+      "uplift_pct": 1.6
     },
     {
       "state": "Level & 0-0",
-      "n": 4744,
-      "baseline": 1.0822,
-      "liveedge": 1.0661,
-      "uplift_pct": 1.49
+      "n": 5054,
+      "baseline": 1.0535,
+      "liveedge": 1.0522,
+      "uplift_pct": 0.13
     },
     {
       "state": "1-goal margin",
-      "n": 5105,
-      "baseline": 0.7994,
-      "liveedge": 0.7787,
-      "uplift_pct": 2.58
+      "n": 4951,
+      "baseline": 0.7461,
+      "liveedge": 0.732,
+      "uplift_pct": 1.89
     },
     {
       "state": "Has a red card",
-      "n": 918,
-      "baseline": 0.6585,
-      "liveedge": 0.4761,
-      "uplift_pct": 27.69
+      "n": 839,
+      "baseline": 0.5746,
+      "liveedge": 0.6556,
+      "uplift_pct": -14.11
     },
     {
       "state": "Last 30 min, level",
-      "n": 1367,
-      "baseline": 1.0102,
-      "liveedge": 0.973,
-      "uplift_pct": 3.68
+      "n": 1556,
+      "baseline": 0.9481,
+      "liveedge": 0.9294,
+      "uplift_pct": 1.97
     }
   ]
 }

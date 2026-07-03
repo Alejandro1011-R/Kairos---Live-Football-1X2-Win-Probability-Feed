@@ -108,7 +108,15 @@ def match_to_rows(meta, events):
     result = "H" if hs > as_ else ("A" if as_ > hs else "D")
 
     def cum_at(d, team, m):
-        return sum(v for mn, v in d[team].items() if mn < m)
+        # inclusive: a goal timestamped exactly at minute m (e.g. second-half
+        # stoppage time, which several providers report as minute 90 rather
+        # than 90+x) must count in the minute-m row — there is no minute-91
+        # row to catch it later. An earlier strict "< m" here silently
+        # dropped these goals from every feature row while the match-level
+        # result label (computed independently, from the official score / by
+        # period) still reflected them — a real feature/label mismatch,
+        # affecting ~17% of matches (any goal at raw minute >= 90).
+        return sum(v for mn, v in d[team].items() if mn <= m)
 
     rows = []
     for m in range(0, MAX_MIN + 1):
@@ -165,6 +173,12 @@ def main(limit=None):
 
     import pandas as pd
     df = pd.DataFrame(all_rows)
+    # ThreadPoolExecutor + as_completed() appends matches in network-completion
+    # order, which is non-deterministic across runs. train.py's match-level
+    # split shuffles df.match_id.unique() with a fixed seed, but that only
+    # reproduces the same split if match_id's first-occurrence order in the
+    # dataframe is itself stable — so it has to be pinned here.
+    df = df.sort_values(["match_id", "minute"]).reset_index(drop=True)
     out = os.path.join(DATA, "snapshots.parquet")
     try:
         df.to_parquet(out, index=False)

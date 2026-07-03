@@ -146,6 +146,7 @@ def match_to_rows(fx, events, elo, comp):
         hg, ag = cum(hg_at, m), cum(ag_at, m)
         rows.append({
             "match_id": fx["id"], "comp": comp, "minute": m,
+            "date": date, "home": fx["homeTeam"]["name"], "away": fx["awayTeam"]["name"],
             "time_remaining": MAX_MIN - m, "goal_diff": hg - ag,
             "home_goals": hg, "away_goals": ag,
             "red_home": cum(rh_at, m), "red_away": cum(ra_at, m),
@@ -188,6 +189,13 @@ def main():
 
     import pandas as pd
     df = pd.DataFrame(all_rows)
+    # ThreadPoolExecutor + as_completed() appends matches in network-completion
+    # order, which is non-deterministic across runs. train.py's match-level
+    # split shuffles df.match_id.unique() with a fixed seed, but relies on
+    # match_id's *first-occurrence order* in the dataframe being stable — so
+    # this row order has to be pinned, or the resulting train/test split
+    # (and every downstream metric) silently changes on every re-run.
+    df = df.sort_values(["match_id", "minute"]).reset_index(drop=True)
     out = os.path.join(DATA, "snapshots_intl.parquet")
     try:
         df.to_parquet(out, index=False)
